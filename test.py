@@ -46,9 +46,15 @@ for item in short_term_date:
 	print item
 
 print "hello"
+short_term_wind=[]
+long_term_wind=[]
+x = len(short_term_date)
+i=0
+for i in range(0,x):
+	short_term_wind.append(dict(zip(('date','value'),(short_term_date[i],float(short_term_most_likely[i])))))
+	long_term_wind.append(dict(zip(('date','value'),(date[i],float(most_likely[i])))))
+	i=i+1
 
-short_term_wind=dict(zip(short_term_date, short_term_most_likely))
-long_term_wind=dict(zip(date,most_likely))
 
 output=json.dumps(short_term_wind)
 output2=json.dumps(long_term_wind)

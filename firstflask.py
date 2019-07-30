@@ -5,6 +5,9 @@ import pandas as pd
 from pandas import DataFrame
 import json
 import urllib3
+import itertools
+from lxml import html
+import csv
 import sys
 if sys.version_info[0] < 3:
     from StringIO import StringIO
@@ -37,7 +40,7 @@ x=StringIO(depth2[2])
 dfsummary = pd.read_html(x, header=0)
 dfsummary1=dfsummary[0]
 dfsummary1.columns = ['Summary', 'Values']
-print dfsummary1
+
 
 
 """Generation detail"""
@@ -57,7 +60,7 @@ for t in tables:
   if len(t.find_parents("table")) == 3:
     depth3.append(t)
 
-print len(depth3)
+
 """get coal data"""
 
 x=StringIO(depth3[0])
@@ -65,7 +68,6 @@ dfs = pd.read_html(x, header=1)
 df0=dfs[0]
 df0['Generation_Type'] = 'COAL'
 
-print df0
 
 
 x=StringIO(depth3[1])
@@ -259,8 +261,6 @@ df4=dfs[0]
 df4['Generation_Type'] = 'BIOMASS AND OTHER'
 
 
-
-
 for i in keys:
     simple_cycle_dictionary[i] = None
 
@@ -299,12 +299,242 @@ dfsimple_cycle['DCR'] = dfsimple_cycle['DCR'].astype('int64')
 
 df_row = pd.concat([df0, dfcombined_cycle,dfsimple_cycle,dfcogeneration,df2,df3,df4])
 df_row=df_row.reset_index(drop=True)
-print df_row
 
 json_units = df_row.to_json(orient='index')
 json_generation_summary=dfgeneration1.to_json(orient='index')
 json_interchange=dfinterchange1.to_json(orient='index')
 json_summary=dfsummary1.to_json(orient='index')
+
+
+"""get forecast vs actual and load data"""
+
+forecast_vs_actual_url="http://ets.aeso.ca/ets_web/ip/Market/Reports/ActualForecastReportServlet?contentType=html"
+response = http.request('GET',forecast_vs_actual_url)
+soup=BeautifulSoup(response.data, "html.parser")
+
+table_array=[]
+tables = soup.findAll("table")
+
+for t in tables:
+	table_array.append(t)
+
+new_table=table_array[2]
+data2=[]
+for td in new_table.findChildren('td'):
+	data2.append(td.text.strip())
+
+
+x=len(data2)
+
+b=0
+
+data3=[]
+
+while b<x:
+	temp={}
+	temp = {
+
+	"date":data2[b],
+	"real_time_forecast":data2[b+2],
+	"actual_price":data2[b+3],
+	"day_ahead_load_forecast":data2[b+4],
+	"actual_ail":data2[b+5],
+	"Forecast_actual_ail_diff":data2[b+6]
+
+	}
+	data3.append(temp)
+	b=b+9
+
+
+forecast_vs_actual_output = json.dumps(data3)
+
+
+"""Long term wind forecast"""
+
+date=[]
+most_likely=[]
+
+url = 'http://ets.aeso.ca/Market/Reports/Manual/Operations/prodweb_reports/wind_power_forecast/WPF_LongTerm.csv'
+http = urllib3.PoolManager()
+r = http.request("GET",url)
+r.status
+response = r.data
+cr = csv.reader(response.decode('utf-8').splitlines())
+for row in itertools.islice(cr,3,30):
+    date.append(row[0])
+    most_likely.append(float(row[2]))
+
+
+"""short term wind forecast"""
+
+short_term_date=[]
+short_term_most_likely=[]
+
+url = 'http://ets.aeso.ca/Market/Reports/Manual/Operations/prodweb_reports/wind_power_forecast/WPF_ShortTerm.csv'
+http = urllib3.PoolManager()
+r = http.request("GET",url)
+r.status
+response = r.data
+cr = csv.reader(response.decode('utf-8').splitlines())
+for row in itertools.islice(cr,3,16):
+    short_term_date.append(row[0])
+    short_term_most_likely.append(float(row[2]))
+
+
+short_term_wind=[]
+long_term_wind=[]
+x = len(short_term_date)
+y = len(date)
+i=0
+j=0
+for i in range(0,x):
+	short_term_wind.append(dict(zip(('date','value'),(short_term_date[i],float(short_term_most_likely[i])))))
+	i=i+1
+
+for j in range(0,y):
+	long_term_wind.append(dict(zip(('date','value'),(date[i],float(most_likely[i])))))
+	j=j+1
+
+
+output2=json.dumps(short_term_wind)
+output3=json.dumps(long_term_wind)
+
+
+"""transfer capacities and market offers"""
+
+page = requests.get('http://itc.aeso.ca/itc/public/realTimeAllocationReport.do;jsessionid=MoIds25m3WR0cjTujvfPvKG-0xnzui8FxmCczt2LtHB2zuK6jByi!514906425')
+tree = html.fromstring(page.content)
+
+date1 = tree.xpath("/html/body/table/tbody/tr[2]/td/table[2]/tbody/tr/td/form/table[2]")
+
+
+
+http = urllib3.PoolManager()
+
+"""transfer capacities and market offers"""
+
+real_time_atc="http://itc.aeso.ca/itc/public/realTimeAllocationReport.do;jsessionid=SPUi4-u_Xy171xTGqLi-iNOPzGEw80gynDeDYgWfYA_LbNcekFx4!249941794"
+response = http.request('GET',real_time_atc)
+soup=BeautifulSoup(response.data.decode('utf-8', 'ignore'), "html.parser")
+data=[]
+
+to_remove = soup.find_all("tr",{"class":"evenrow"})
+for element in to_remove:
+    children = element.findChildren("td")
+    for child in children:
+		x=child.findChildren()
+		y=len(x)
+		if y>0:
+			try:
+				data.append(child.find('b').get_text().strip())
+			except:
+				continue
+
+		else:
+			try:
+				data.append(child.get_text().strip())
+			except:
+				continue
+
+
+
+even_dict=[]
+
+a=0
+
+x=len(data)
+
+
+while a < x:
+    temp={}
+    temp = {
+      "date":data[a],
+      "he":data[a+1],
+      "Offers_BC_IMPORT":int(data[a+3]),
+      "Offers_BC_EXPORT":int(data[a+4]),
+      "Offers_MATL_IMPORT":int(data[a+5]),
+      "Offers_MATL_EXPORT":int(data[a+6]),
+      "Offers_SK_IMPORT":int(data[a+7]),
+      "Offers_SK_EXPORT":int(data[a+8]),
+      "Offers_BC_MATL_Import":int(data[a+9]),
+      "Offers_BC_MATL_Export":int(data[a+10]),
+      "Offers_System_Import":int(data[a+11]),
+      "Offers_System_Export":int(data[a+12]),
+      "ATC_BC_IMPORT":int(data[a+55]),
+      "ATC_BC_EXPORT":int(data[a+56]),
+      "ATC_MATL_IMPORT":int(data[a+57]),
+      "ATC_MATL_EXPORT":int(data[a+58]),
+      "ATC_SK_IMPORT":int(data[a+59]),
+      "ATC_SK_EXPORT":int(data[a+60]),
+      "ATC_BC_MATL_IMPORT":int(data[a+61]),
+      "ATC_BC_MATL_EXPORT":int(data[a+62]),
+      "ATC_SYSTEM_IMPORT":int(data[a+63]),
+      "ATC_SYSTEM_EXPORT":int(data[a+64])
+    }
+
+
+    even_dict.append(temp)
+    a=a+65
+
+"""Get Odd rows"""
+
+data=[]
+
+to_remove = soup.find_all("tr",{"class":"oddrow"})
+for element in to_remove:
+    children = element.findChildren("td")
+    for child in children:
+		x=child.findChildren()
+		y=len(x)
+		if y>0:
+			try:
+				data.append(child.find('b').get_text().strip())
+			except:
+				continue
+
+		else:
+			try:
+				data.append(child.get_text().strip())
+			except:
+				continue
+a=0
+
+x=len(data)
+
+
+while a < x:
+    temp={}
+    temp = {
+      "date":data[a],
+      "he":data[a+1],
+      "Offers_BC_IMPORT":int(data[a+3]),
+      "Offers_BC_EXPORT":int(data[a+4]),
+      "Offers_MATL_IMPORT":int(data[a+5]),
+      "Offers_MATL_EXPORT":int(data[a+6]),
+      "Offers_SK_IMPORT":int(data[a+7]),
+      "Offers_SK_EXPORT":int(data[a+8]),
+      "Offers_BC_MATL_Import":int(data[a+9]),
+      "Offers_BC_MATL_Export":int(data[a+10]),
+      "Offers_System_Import":int(data[a+11]),
+      "Offers_System_Export":int(data[a+12]),
+      "ATC_BC_IMPORT":int(data[a+55]),
+      "ATC_BC_EXPORT":int(data[a+56]),
+      "ATC_MATL_IMPORT":int(data[a+57]),
+      "ATC_MATL_EXPORT":int(data[a+58]),
+      "ATC_SK_IMPORT":int(data[a+59]),
+      "ATC_SK_EXPORT":int(data[a+60]),
+      "ATC_BC_MATL_IMPORT":int(data[a+61]),
+      "ATC_BC_MATL_EXPORT":int(data[a+62]),
+      "ATC_SYSTEM_IMPORT":int(data[a+63]),
+      "ATC_SYSTEM_EXPORT":int(data[a+64])
+    }
+
+    even_dict.append(temp)
+    a=a+65
+
+
+output=json.dumps(even_dict)
+
 
 
 @app.route("/test", methods=['GET','POST'])
@@ -323,6 +553,20 @@ def test3():
 @app.route("/Summary", methods=['GET','POST'])
 def test4():
     return json_summary
+
+
+@app.route("/forecastvsactual", methods=['GET','POST'])
+def test5():
+    return forecast_vs_actual_output
+
+@app.route("/shorttermwind", methods=['GET','POST'])
+def test6():
+    return output2
+
+@app.route("/longtermwind", methods=['GET','POST'])
+def test7():
+    return output3
+
 
 
 
