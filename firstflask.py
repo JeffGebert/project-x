@@ -35,18 +35,21 @@ for t in tables:
 """summary detail"""
 x=StringIO(depth2[2])
 dfsummary = pd.read_html(x, header=0)
-print dfsummary
+dfsummary1=dfsummary[0]
+dfsummary1.columns = ['Summary', 'Values']
+print dfsummary1
+
 
 """Generation detail"""
 
 x=StringIO(depth2[3])
 dfgeneration = pd.read_html(x, header=1)
-print dfgeneration
+dfgeneration1=dfgeneration[0]
 
 """Interchange"""
 x=StringIO(depth2[4])
 dfinterchange = pd.read_html(x, header=1)
-print dfinterchange
+dfinterchange1=dfinterchange[0]
 
 
 
@@ -111,6 +114,15 @@ while i < len(df1):
 
 keys = ['ASSET','MC','TNG', 'DCR', 'Generation_Type']
 combined_cycle_dictionary = {}
+simple_cycle_dictionary={}
+cogeneration_dictionary={}
+
+
+
+
+
+
+
 for i in keys:
     combined_cycle_dictionary[i] = None
 
@@ -120,28 +132,111 @@ mc=[]
 tng=[]
 dcr=[]
 Generation_Type=[]
-new_data=[]
+combined_cycle_data=[]
 i=0
 while i <len(combined_cycle_list):
 	temp=combined_cycle_list[i].to_dict()
 	asset.append(temp.pop(0))
-	mc.append(temp.pop(1))
-	tng.append(temp.pop(2))
-	dcr.append(temp.pop(3))
+	mc.append(int(temp.pop(1)))
+	tng.append(int(temp.pop(2)))
+	dcr.append(int(temp.pop(3)))
 	Generation_Type.append('Combined Cycle')
 	i += 1
 
-new_data.append(asset)
-new_data.append(mc)
-new_data.append(tng)
-new_data.append(dcr)
-new_data.append(Generation_Type)
+combined_cycle_data.append(asset)
+combined_cycle_data.append(mc)
+combined_cycle_data.append(tng)
+combined_cycle_data.append(dcr)
+combined_cycle_data.append(Generation_Type)
 
 
 
-dfnew_data = pd.DataFrame(new_data)
-dfnew_data = dfnew_data.transpose()
-dfnew_data.columns = ["ASSET", "MC", "TNG", "DCR", "Generation_Type"]
+dfcombined_cycle = pd.DataFrame(combined_cycle_data)
+dfcombined_cycle = dfcombined_cycle.transpose()
+dfcombined_cycle.columns = ["ASSET", "MC", "TNG", "DCR", "Generation_Type"]
+
+dfcombined_cycle['MC'] = dfcombined_cycle['MC'].astype('int64')
+dfcombined_cycle['TNG'] = dfcombined_cycle['TNG'].astype('int64')
+dfcombined_cycle['DCR'] = dfcombined_cycle['DCR'].astype('int64')
+
+
+
+for i in keys:
+    simple_cycle_dictionary[i] = None
+
+simple_cycle_list.pop(0)
+asset=[]
+mc=[]
+tng=[]
+dcr=[]
+Generation_Type=[]
+cogeneration_data=[]
+i=0
+while i <len(simple_cycle_list):
+	temp=simple_cycle_list[i].to_dict()
+	asset.append(temp.pop(0))
+	mc.append(int(temp.pop(1)))
+	tng.append(int(temp.pop(2)))
+	dcr.append(int(temp.pop(3)))
+	Generation_Type.append('Simple Cycle')
+	i += 1
+
+cogeneration_data.append(asset)
+cogeneration_data.append(mc)
+cogeneration_data.append(tng)
+cogeneration_data.append(dcr)
+cogeneration_data.append(Generation_Type)
+
+
+
+dfcogeneration = pd.DataFrame(cogeneration_data)
+dfcogeneration = dfcogeneration.transpose()
+dfcogeneration.columns = ["ASSET", "MC", "TNG", "DCR", "Generation_Type"]
+
+dfcogeneration['MC'] = dfcogeneration['MC'].astype('int64')
+dfcogeneration['TNG'] = dfcogeneration['TNG'].astype('int64')
+dfcogeneration['DCR'] = dfcogeneration['DCR'].astype('int64')
+
+
+
+
+
+for i in keys:
+    cogeneration_dictionary[i] = None
+
+simple_cycle_list.pop(0)
+asset=[]
+mc=[]
+tng=[]
+dcr=[]
+Generation_Type=[]
+cogeneration_data=[]
+i=0
+while i <len(simple_cycle_list):
+	temp=simple_cycle_list[i].to_dict()
+	asset.append(temp.pop(0))
+	mc.append(int(temp.pop(1)))
+	tng.append(int(temp.pop(2)))
+	dcr.append(int(temp.pop(3)))
+	Generation_Type.append('Simple Cycle')
+	i += 1
+
+cogeneration_data.append(asset)
+cogeneration_data.append(mc)
+cogeneration_data.append(tng)
+cogeneration_data.append(dcr)
+cogeneration_data.append(Generation_Type)
+
+
+
+dfsimple_cycle = pd.DataFrame(cogeneration_data)
+dfsimple_cycle = dfsimple_cycle.transpose()
+dfsimple_cycle.columns = ["ASSET", "MC", "TNG", "DCR", "Generation_Type"]
+
+dfsimple_cycle['MC'] = dfsimple_cycle['MC'].astype('int64')
+dfsimple_cycle['TNG'] = dfsimple_cycle['TNG'].astype('int64')
+dfsimple_cycle['DCR'] = dfsimple_cycle['DCR'].astype('int64')
+
 
 """Get Hydro Data"""
 x=StringIO(depth3[2])
@@ -163,15 +258,72 @@ dfs = pd.read_html(x, header=1)
 df4=dfs[0]
 df4['Generation_Type'] = 'BIOMASS AND OTHER'
 
-out = df0.to_dict()
-print out
-coal=json.dumps(out)
-print coal
+
+
+
+for i in keys:
+    simple_cycle_dictionary[i] = None
+
+simple_cycle_list.pop(0)
+asset=[]
+mc=[]
+tng=[]
+dcr=[]
+Generation_Type=[]
+simple_cycle_data=[]
+i=0
+while i <len(simple_cycle_list):
+	temp=simple_cycle_list[i].to_dict()
+	asset.append(temp.pop(0))
+	mc.append(int(temp.pop(1)))
+	tng.append(int(temp.pop(2)))
+	dcr.append(int(temp.pop(3)))
+	Generation_Type.append('Simple Cycle')
+	i += 1
+
+simple_cycle_data.append(asset)
+simple_cycle_data.append(mc)
+simple_cycle_data.append(tng)
+simple_cycle_data.append(dcr)
+simple_cycle_data.append(Generation_Type)
+
+
+
+dfsimple_cycle = pd.DataFrame(simple_cycle_data)
+dfsimple_cycle = dfsimple_cycle.transpose()
+dfsimple_cycle.columns = ["ASSET", "MC", "TNG", "DCR", "Generation_Type"]
+
+dfsimple_cycle['MC'] = dfsimple_cycle['MC'].astype('int64')
+dfsimple_cycle['TNG'] = dfsimple_cycle['TNG'].astype('int64')
+dfsimple_cycle['DCR'] = dfsimple_cycle['DCR'].astype('int64')
+
+df_row = pd.concat([df0, dfcombined_cycle,dfsimple_cycle,dfcogeneration,df2,df3,df4])
+df_row=df_row.reset_index(drop=True)
+print df_row
+
+json_units = df_row.to_json(orient='index')
+json_generation_summary=dfgeneration1.to_json(orient='index')
+json_interchange=dfinterchange1.to_json(orient='index')
+json_summary=dfsummary1.to_json(orient='index')
 
 
 @app.route("/test", methods=['GET','POST'])
 def test():
-    return "New"
+    return json_units
+
+
+@app.route("/generation_summary", methods=['GET','POST'])
+def test2():
+    return json_generation_summary
+
+@app.route("/interchange", methods=['GET','POST'])
+def test3():
+    return json_interchange
+
+@app.route("/Summary", methods=['GET','POST'])
+def test4():
+    return json_summary
+
 
 
 if __name__ == "__main__":

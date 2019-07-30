@@ -71,6 +71,13 @@ for row in itertools.islice(cr,3,16):
     short_term_most_likely.append(row[2])
 
 
+short_term_wind=dict(zip(short_term_date, short_term_most_likely))
+long_term_wind=dict(zip(date,most_likely))
+
+output2=json.dumps(short_term_wind)
+output3=json.dumps(long_term_wind)
+
+
 """transfer capacities and market offers"""
 
 page = requests.get('http://itc.aeso.ca/itc/public/realTimeAllocationReport.do;jsessionid=MoIds25m3WR0cjTujvfPvKG-0xnzui8FxmCczt2LtHB2zuK6jByi!514906425')
@@ -210,6 +217,15 @@ output=json.dumps(even_dict)
 @app.route("/forecastvsactual", methods=['GET','POST'])
 def test():
     return output
+
+@app.route("/shorttermwind", methods=['GET','POST'])
+def test2():
+    return output2
+
+@app.route("/longtermwind", methods=['GET','POST'])
+def test3():
+    return output3
+
 
 
 if __name__ == "__main__":
