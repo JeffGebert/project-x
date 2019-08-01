@@ -53,6 +53,7 @@ dfgeneration1=dfgeneration[0]
 x=StringIO(depth2[4])
 dfinterchange = pd.read_html(x, header=1)
 dfinterchange1=dfinterchange[0]
+dfinterchange1.columns=['PATH','ACTUAL_FLOW']
 
 
 
@@ -305,6 +306,7 @@ json_generation_summary=dfgeneration1.to_json(orient='index')
 json_interchange=dfinterchange1.to_json(orient='index')
 json_summary=dfsummary1.to_json(orient='index')
 
+print json_interchange
 
 """get forecast vs actual and load data"""
 
