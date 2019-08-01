@@ -306,7 +306,6 @@ json_generation_summary=dfgeneration1.to_json(orient='index')
 json_interchange=dfinterchange1.to_json(orient='index')
 json_summary=dfsummary1.to_json(orient='index')
 
-print json_interchange
 
 """get forecast vs actual and load data"""
 

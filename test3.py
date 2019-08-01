@@ -34,9 +34,6 @@ for td in new_table.findChildren('td'):
 x=len(data2)
 
 b=0
-for item in data2:
-	print item
-
 
 data3=[]
 
