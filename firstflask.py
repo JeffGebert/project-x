@@ -570,8 +570,8 @@ def test8():
 
 	to_remove = soup.find_all("tr",{"class":"oddrow"})
 	for element in to_remove:
-	    children = element.findChildren("td")
-	    for child in children:
+		children = element.findChildren("td")
+		for child in children:
 			x=child.findChildren()
 			y=len(x)
 			if y>0:
