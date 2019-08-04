@@ -462,8 +462,6 @@ def test6():
 		i=i+1
 
 
-	print short_term_wind
-
 	output2=json.dumps(short_term_wind)
 
 
