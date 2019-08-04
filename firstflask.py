@@ -76,6 +76,8 @@ def test():
 
 	while i < len(df1):
 
+		x=df1[0][i]
+
 		if df1[0][i] =='Simple Cycle':
 			i=i+1
 			type=1
