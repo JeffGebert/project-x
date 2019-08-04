@@ -4,8 +4,10 @@ from bs4 import BeautifulSoup
 import pandas as pd
 from pandas import DataFrame
 import json
+import csv
 import urllib3
 import sys
+import itertools
 if sys.version_info[0] < 3:
     from StringIO import StringIO
 else:
@@ -14,44 +16,28 @@ else:
 http = urllib3.PoolManager()
 
 
-forecast_vs_actual_url="http://ets.aeso.ca/ets_web/ip/Market/Reports/ActualForecastReportServlet?contentType=html"
-response = http.request('GET',forecast_vs_actual_url)
+current_supply_and_demand_url="http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet"
+response = http.request('GET',current_supply_and_demand_url)
 soup=BeautifulSoup(response.data, "html.parser")
 
-table_array=[]
 tables = soup.findAll("table")
+depth2 = []
+depth3 = []
 
 for t in tables:
-	table_array.append(t)
-
-new_table=table_array[2]
-data2=[]
-for td in new_table.findChildren('td'):
-	data2.append(td.text.strip())
+	 if len(t.find_parents("table")) == 2:
+	   depth2.append(t)
 
 
-x=len(data2)
 
-b=0
-
-data3=[]
-
-while b<x:
-	temp={}
-	temp = {
-
-	"date":data2[b],
-	"real_time_forecast":data2[b+2],
-	"actual_price":data2[b+3],
-	"day_ahead_load_forecast":data2[b+4],
-	"actual_ail":data2[b+5],
-	"Forecast_actual_ail_diff":data2[b+6]
-
-	}
-	data3.append(temp)
-	b=b+9
+"""summary detail"""
+x=StringIO(depth2[2])
+dfsummary = pd.read_html(x, header=0)
+dfsummary1=dfsummary[0]
+dfsummary1.columns = ['Summary', 'Values']
 
 
-forecast_vs_actual_output = json.dumps(data3)
 
-print forecast_vs_actual_output
+json_summary=dfsummary1.to_json(orient='index')
+
+print json_summary

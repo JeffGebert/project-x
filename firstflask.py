@@ -439,6 +439,7 @@ def test6():
 
 	"""short term wind forecast"""
 
+
 	short_term_date=[]
 	short_term_most_likely=[]
 
@@ -452,10 +453,8 @@ def test6():
 	    short_term_date.append(row[0])
 	    short_term_most_likely.append(float(row[2]))
 
-
 	short_term_wind=[]
 	x = len(short_term_date)
-
 	i=0
 
 	for i in range(0,x):
@@ -463,14 +462,13 @@ def test6():
 		i=i+1
 
 
+	print short_term_wind
+
+	output2=json.dumps(short_term_wind)
 
 
 
-		output2=json.dumps(short_term_wind)
-
-
-
-		return output2
+	return output2
 
 @app.route("/longtermwind", methods=['GET','POST'])
 def test7():
