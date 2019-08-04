@@ -10,9 +10,9 @@ from lxml import html
 import csv
 import sys
 if sys.version_info[0] < 3:
-    from StringIO import StringIO
+	from StringIO import StringIO
 else:
-    from io import StringIO
+	from io import StringIO
 
 http = urllib3.PoolManager()
 
@@ -38,16 +38,16 @@ def test():
 	depth3 = []
 
 	for t in tables:
-	  if len(t.find_parents("table")) == 2:
-	    depth2.append(t)
+		if len(t.find_parents("table")) == 2:
+			depth2.append(t)
 
 
 
 
 
 	for t in tables:
-	  if len(t.find_parents("table")) == 3:
-	    depth3.append(t)
+		if len(t.find_parents("table")) == 3:
+			depth3.append(t)
 
 
 	"""get coal data"""
@@ -115,7 +115,7 @@ def test():
 
 
 	for i in keys:
-	    combined_cycle_dictionary[i] = None
+		combined_cycle_dictionary[i] = None
 
 	combined_cycle_list.pop(0)
 	asset=[]
@@ -153,7 +153,7 @@ def test():
 
 
 	for i in keys:
-	    simple_cycle_dictionary[i] = None
+		simple_cycle_dictionary[i] = None
 
 	simple_cycle_list.pop(0)
 	asset=[]
@@ -193,7 +193,7 @@ def test():
 
 
 	for i in keys:
-	    cogeneration_dictionary[i] = None
+		cogeneration_dictionary[i] = None
 
 	simple_cycle_list.pop(0)
 	asset=[]
@@ -251,7 +251,7 @@ def test():
 
 
 	for i in keys:
-	    simple_cycle_dictionary[i] = None
+		simple_cycle_dictionary[i] = None
 
 	simple_cycle_list.pop(0)
 	asset=[]
@@ -307,8 +307,8 @@ def test2():
 	depth3 = []
 
 	for t in tables:
-	  if len(t.find_parents("table")) == 2:
-	    depth2.append(t)
+		if len(t.find_parents("table")) == 2:
+			depth2.append(t)
 
 
 	"""Generation detail"""
@@ -335,8 +335,8 @@ def test3():
 	depth3 = []
 
 	for t in tables:
-	  if len(t.find_parents("table")) == 2:
-	    depth2.append(t)
+		if len(t.find_parents("table")) == 2:
+			depth2.append(t)
 
 
 
@@ -368,8 +368,8 @@ def test4():
 	depth3 = []
 
 	for t in tables:
-	  if len(t.find_parents("table")) == 2:
-	    depth2.append(t)
+		if len(t.find_parents("table")) == 2:
+			depth2.append(t)
 
 
 
@@ -450,8 +450,8 @@ def test6():
 	response = r.data
 	cr = csv.reader(response.decode('utf-8').splitlines())
 	for row in itertools.islice(cr,3,16):
-	    short_term_date.append(row[0])
-	    short_term_most_likely.append(float(row[2]))
+		short_term_date.append(row[0])
+		short_term_most_likely.append(float(row[2]))
 
 	short_term_wind=[]
 	x = len(short_term_date)
@@ -483,8 +483,8 @@ def test7():
 	response = r.data
 	cr = csv.reader(response.decode('utf-8').splitlines())
 	for row in itertools.islice(cr,3,30):
-	    date.append(row[0])
-	    most_likely.append(float(row[2]))
+		date.append(row[0])
+		most_likely.append(float(row[2]))
 
 	long_term_wind=[]
 	y = len(date)
@@ -534,35 +534,35 @@ def test8():
 
 
 	while a < x:
-	    temp={}
-	    temp = {
-	      "date":data[a],
-	      "he":int(data[a+1]),
-	      "Offers_BC_IMPORT":int(data[a+3]),
-	      "Offers_BC_EXPORT":int(data[a+4]),
-	      "Offers_MATL_IMPORT":int(data[a+5]),
-	      "Offers_MATL_EXPORT":int(data[a+6]),
-	      "Offers_SK_IMPORT":int(data[a+7]),
-	      "Offers_SK_EXPORT":int(data[a+8]),
-	      "Offers_BC_MATL_Import":int(data[a+9]),
-	      "Offers_BC_MATL_Export":int(data[a+10]),
-	      "Offers_System_Import":int(data[a+11]),
-	      "Offers_System_Export":int(data[a+12]),
-	      "ATC_BC_IMPORT":int(data[a+55]),
-	      "ATC_BC_EXPORT":int(data[a+56]),
-	      "ATC_MATL_IMPORT":int(data[a+57]),
-	      "ATC_MATL_EXPORT":int(data[a+58]),
-	      "ATC_SK_IMPORT":int(data[a+59]),
-	      "ATC_SK_EXPORT":int(data[a+60]),
-	      "ATC_BC_MATL_IMPORT":int(data[a+61]),
-	      "ATC_BC_MATL_EXPORT":int(data[a+62]),
-	      "ATC_SYSTEM_IMPORT":int(data[a+63]),
-	      "ATC_SYSTEM_EXPORT":int(data[a+64])
-	    }
+		temp={}
+		temp = {
+		"date":data[a],
+		"he":int(data[a+1]),
+		"Offers_BC_IMPORT":int(data[a+3]),
+		"Offers_BC_EXPORT":int(data[a+4]),
+		"Offers_MATL_IMPORT":int(data[a+5]),
+		"Offers_MATL_EXPORT":int(data[a+6]),
+		"Offers_SK_IMPORT":int(data[a+7]),
+		"Offers_SK_EXPORT":int(data[a+8]),
+		"Offers_BC_MATL_Import":int(data[a+9]),
+		"Offers_BC_MATL_Export":int(data[a+10]),
+		"Offers_System_Import":int(data[a+11]),
+		"Offers_System_Export":int(data[a+12]),
+		"ATC_BC_IMPORT":int(data[a+55]),
+		"ATC_BC_EXPORT":int(data[a+56]),
+		"ATC_MATL_IMPORT":int(data[a+57]),
+		"ATC_MATL_EXPORT":int(data[a+58]),
+		"ATC_SK_IMPORT":int(data[a+59]),
+		"ATC_SK_EXPORT":int(data[a+60]),
+		"ATC_BC_MATL_IMPORT":int(data[a+61]),
+		"ATC_BC_MATL_EXPORT":int(data[a+62]),
+		"ATC_SYSTEM_IMPORT":int(data[a+63]),
+		"ATC_SYSTEM_EXPORT":int(data[a+64])
+		}
 
 
-	    even_dict.append(temp)
-	    a=a+65
+		even_dict.append(temp)
+		a=a+65
 
 	"""Get Odd rows"""
 
@@ -591,34 +591,34 @@ def test8():
 
 
 	while a < x:
-	    temp={}
-	    temp = {
-	      "date":data[a],
-	      "he":int(data[a+1]),
-	      "Offers_BC_IMPORT":int(data[a+3]),
-	      "Offers_BC_EXPORT":int(data[a+4]),
-	      "Offers_MATL_IMPORT":int(data[a+5]),
-	      "Offers_MATL_EXPORT":int(data[a+6]),
-	      "Offers_SK_IMPORT":int(data[a+7]),
-	      "Offers_SK_EXPORT":int(data[a+8]),
-	      "Offers_BC_MATL_Import":int(data[a+9]),
-	      "Offers_BC_MATL_Export":int(data[a+10]),
-	      "Offers_System_Import":int(data[a+11]),
-	      "Offers_System_Export":int(data[a+12]),
-	      "ATC_BC_IMPORT":int(data[a+55]),
-	      "ATC_BC_EXPORT":int(data[a+56]),
-	      "ATC_MATL_IMPORT":int(data[a+57]),
-	      "ATC_MATL_EXPORT":int(data[a+58]),
-	      "ATC_SK_IMPORT":int(data[a+59]),
-	      "ATC_SK_EXPORT":int(data[a+60]),
-	      "ATC_BC_MATL_IMPORT":int(data[a+61]),
-	      "ATC_BC_MATL_EXPORT":int(data[a+62]),
-	      "ATC_SYSTEM_IMPORT":int(data[a+63]),
-	      "ATC_SYSTEM_EXPORT":int(data[a+64])
-	    }
+		temp={}
+		temp = {
+		"date":data[a],
+		"he":int(data[a+1]),
+		"Offers_BC_IMPORT":int(data[a+3]),
+		"Offers_BC_EXPORT":int(data[a+4]),
+		"Offers_MATL_IMPORT":int(data[a+5]),
+		"Offers_MATL_EXPORT":int(data[a+6]),
+		"Offers_SK_IMPORT":int(data[a+7]),
+		"Offers_SK_EXPORT":int(data[a+8]),
+		"Offers_BC_MATL_Import":int(data[a+9]),
+		"Offers_BC_MATL_Export":int(data[a+10]),
+		"Offers_System_Import":int(data[a+11]),
+		"Offers_System_Export":int(data[a+12]),
+		"ATC_BC_IMPORT":int(data[a+55]),
+		"ATC_BC_EXPORT":int(data[a+56]),
+		"ATC_MATL_IMPORT":int(data[a+57]),
+		"ATC_MATL_EXPORT":int(data[a+58]),
+		"ATC_SK_IMPORT":int(data[a+59]),
+		"ATC_SK_EXPORT":int(data[a+60]),
+		"ATC_BC_MATL_IMPORT":int(data[a+61]),
+		"ATC_BC_MATL_EXPORT":int(data[a+62]),
+		"ATC_SYSTEM_IMPORT":int(data[a+63]),
+		"ATC_SYSTEM_EXPORT":int(data[a+64])
+		}
 
-	    even_dict.append(temp)
-	    a=a+65
+		even_dict.append(temp)
+		a=a+65
 
 
 	output=json.dumps(even_dict)
@@ -631,4 +631,4 @@ def test8():
 
 
 if __name__ == "__main__":
-  app.run()
+	app.run()
