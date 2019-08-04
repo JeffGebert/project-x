@@ -13,7 +13,6 @@ else:
 
 http = urllib3.PoolManager()
 
-"""get forecast vs actual and load data"""
 
 forecast_vs_actual_url="http://ets.aeso.ca/ets_web/ip/Market/Reports/ActualForecastReportServlet?contentType=html"
 response = http.request('GET',forecast_vs_actual_url)
@@ -41,7 +40,7 @@ while b<x:
 	temp={}
 	temp = {
 
-	"date(he)":data2[b],
+	"date":data2[b],
 	"real_time_forecast":data2[b+2],
 	"actual_price":data2[b+3],
 	"day_ahead_load_forecast":data2[b+4],
@@ -52,4 +51,7 @@ while b<x:
 	data3.append(temp)
 	b=b+9
 
-print data3
+
+forecast_vs_actual_output = json.dumps(data3)
+
+print forecast_vs_actual_output
