@@ -505,6 +505,9 @@ def test7():
 @app.route("/atc", methods=['GET','POST'])
 def test8():
 
+	http = urllib3.PoolManager()
+
+
 	real_time_atc="http://itc.aeso.ca/itc/public/realTimeAllocationReport.do;jsessionid=SPUi4-u_Xy171xTGqLi-iNOPzGEw80gynDeDYgWfYA_LbNcekFx4!249941794"
 	response = http.request('GET',real_time_atc)
 	soup=BeautifulSoup(response.data.decode('utf-8', 'ignore'), "html.parser")
