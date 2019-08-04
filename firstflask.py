@@ -14,20 +14,17 @@ if sys.version_info[0] < 3:
 else:
 	from io import StringIO
 
-http = urllib3.PoolManager()
-
 app = Flask(__name__)
 
-
-
-
-http = urllib3.PoolManager()
 
 
 
 
 @app.route("/test", methods=['GET','POST'])
 def test():
+
+
+	http = urllib3.PoolManager()
 
 	current_supply_and_demand_url="http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet"
 	response = http.request('GET',current_supply_and_demand_url)
@@ -298,6 +295,9 @@ def test():
 @app.route("/generation_summary", methods=['GET','POST'])
 def test2():
 
+
+	http = urllib3.PoolManager()
+
 	current_supply_and_demand_url="http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet"
 	response = http.request('GET',current_supply_and_demand_url)
 	soup=BeautifulSoup(response.data, "html.parser")
@@ -324,6 +324,8 @@ def test2():
 
 @app.route("/interchange", methods=['GET','POST'])
 def test3():
+
+	http = urllib3.PoolManager()
 
 
 	current_supply_and_demand_url="http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet"
@@ -357,6 +359,8 @@ def test3():
 @app.route("/Summary", methods=['GET','POST'])
 def test4():
 
+
+	http = urllib3.PoolManager()
 
 
 	current_supply_and_demand_url="http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet"
