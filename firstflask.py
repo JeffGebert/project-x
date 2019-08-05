@@ -60,6 +60,7 @@ def test():
 	x=StringIO(depth3[1])
 	dfs = pd.read_html(x)
 	df1=dfs[0]
+	df1=df[0]
 
 
 
@@ -76,20 +77,20 @@ def test():
 
 	while i < len(df1):
 
-		x=df1[0][i]
 
-		if df1[0][i] =='Simple Cycle':
+
+		if df1[i] =='Simple Cycle':
 			i=i+1
 			type=1
 			continue
 
-		elif df1[0][i] =='Cogeneration':
+		elif df1[i] =='Cogeneration':
 			i=i+1
 			type=2
 			continue
 
 
-		elif df1[0][i] =='Combined Cycle':
+		elif df1[i] =='Combined Cycle':
 			i=i+1
 			type=3
 			continue
