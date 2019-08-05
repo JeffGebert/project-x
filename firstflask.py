@@ -60,7 +60,7 @@ def test():
 	x=StringIO(depth3[1])
 	dfs = pd.read_html(x)
 	df1=dfs[0]
-	df1=df[0]
+	df1=df1[0]
 
 
 
