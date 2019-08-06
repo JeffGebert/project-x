@@ -79,18 +79,18 @@ def test():
 
 
 
-		if df1[0][i] =='Simple Cycle':
+		if df1[0].loc[i] =='Simple Cycle':
 			i=i+1
 			type=1
 			continue
 
-		elif df1[0][i] =='Cogeneration':
+		elif df1[0].loc[i] =='Cogeneration':
 			i=i+1
 			type=2
 			continue
 
 
-		elif df1[0][i] =='Combined Cycle':
+		elif df1[0].loc[i] =='Combined Cycle':
 			i=i+1
 			type=3
 			continue
