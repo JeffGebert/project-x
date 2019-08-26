@@ -23,6 +23,7 @@ app = Flask(__name__)
 @app.route("/test", methods=['GET','POST'])
 def test():
 
+	http = urllib3.PoolManager()
 	current_supply_and_demand_url="http://ets.aeso.ca/ets_web/ip/Market/Reports/CSDReportServlet"
 	response = http.request('GET',current_supply_and_demand_url)
 	soup=BeautifulSoup(response.data, "html.parser")
