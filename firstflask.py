@@ -6,6 +6,7 @@ from pandas import DataFrame
 import json
 import urllib3
 import itertools
+from itertools import islice
 from lxml import html
 import csv
 import sys
@@ -13,6 +14,9 @@ if sys.version_info[0] < 3:
 	from StringIO import StringIO
 else:
 	from io import StringIO
+import io
+from io import StringIO
+
 
 app = Flask(__name__)
 
@@ -49,14 +53,14 @@ def test():
 
 	"""get coal data"""
 
-	x=StringIO(depth3[0])
+	x=depth3[0].prettify()
 	dfs = pd.read_html(x, header=1)
 	df0=dfs[0]
 	df0['Generation_Type'] = 'COAL'
 
 
 
-	x=StringIO(depth3[1])
+	x=depth3[1].prettify()
 	dfs = pd.read_html(x)
 	df1=dfs[0]
 
@@ -74,20 +78,18 @@ def test():
 
 	while i < len(df1):
 
-
-
-		if df1[0][i] =='Simple Cycle':
+		if df1.iloc[int(i),0] =='Simple Cycle':
 			i=i+1
 			type=1
 			continue
 
-		elif df1[0][i] =='Cogeneration':
+		elif df1.iloc[int(i),0] =='Cogeneration':
 			i=i+1
 			type=2
 			continue
 
 
-		elif df1[0][i] =='Combined Cycle':
+		elif df1.iloc[int(i),0] =='Combined Cycle':
 			i=i+1
 			type=3
 			continue
@@ -116,7 +118,6 @@ def test():
 
 	for i in keys:
 		simple_cycle_dictionary[i] = None
-
 	simple_cycle_list.pop(0)
 	asset=[]
 	mc=[]
@@ -127,10 +128,10 @@ def test():
 	i=0
 	while i <len(simple_cycle_list):
 		temp=simple_cycle_list[i].to_dict()
-		asset.append(temp.pop(0))
-		mc.append(int(temp.pop(1)))
-		tng.append(int(temp.pop(2)))
-		dcr.append(int(temp.pop(3)))
+		asset.append(temp[next(islice(temp, 0, None))])
+		mc.append(temp[next(islice(temp, int(1), None))])
+		tng.append(temp[next(islice(temp, int(2), None))])
+		dcr.append(temp[next(islice(temp, int(3), None))])
 		Generation_Type.append('Simple Cycle')
 		i += 1
 
@@ -144,12 +145,10 @@ def test():
 	dfsimple_cycle = pd.DataFrame(simple_cycle_data)
 	dfsimple_cycle = dfsimple_cycle.transpose()
 	dfsimple_cycle.columns = ["ASSET", "MC", "TNG", "DCR", "Generation_Type"]
-
+	print (dfsimple_cycle)
 	dfsimple_cycle['MC'] = dfsimple_cycle['MC'].astype('int64')
 	dfsimple_cycle['TNG'] = dfsimple_cycle['TNG'].astype('int64')
 	dfsimple_cycle['DCR'] = dfsimple_cycle['DCR'].astype('int64')
-
-	print dfsimple_cycle
 
 
 	for i in keys:
@@ -165,10 +164,10 @@ def test():
 	i=0
 	while i <len(combined_cycle_list):
 		temp=combined_cycle_list[i].to_dict()
-		asset.append(temp.pop(0))
-		mc.append(int(temp.pop(1)))
-		tng.append(int(temp.pop(2)))
-		dcr.append(int(temp.pop(3)))
+		asset.append(temp[next(islice(temp, 0, None))])
+		mc.append(temp[next(islice(temp, int(1), None))])
+		tng.append(temp[next(islice(temp, int(2), None))])
+		dcr.append(temp[next(islice(temp, int(3), None))])
 		Generation_Type.append('Combined Cycle')
 		i += 1
 
@@ -188,8 +187,6 @@ def test():
 	dfcombined_cycle['TNG'] = dfcombined_cycle['TNG'].astype('int64')
 	dfcombined_cycle['DCR'] = dfcombined_cycle['DCR'].astype('int64')
 
-	print dfcombined_cycle
-
 
 	for i in keys:
 		cogeneration_dictionary[i] = None
@@ -205,10 +202,10 @@ def test():
 	i=0
 	while i <len(cogeneration_list):
 		temp=cogeneration_list[i].to_dict()
-		asset.append(temp.pop(0))
-		mc.append(int(temp.pop(1)))
-		tng.append(int(temp.pop(2)))
-		dcr.append(int(temp.pop(3)))
+		asset.append(temp[next(islice(temp, 0, None))])
+		mc.append(temp[next(islice(temp, int(1), None))])
+		tng.append(temp[next(islice(temp, int(2), None))])
+		dcr.append(temp[next(islice(temp, int(3), None))])
 		Generation_Type.append('Cogeneration')
 		i += 1
 
@@ -228,25 +225,23 @@ def test():
 	dfcogeneration['TNG'] = dfcogeneration['TNG'].astype('int64')
 	dfcogeneration['DCR'] = dfcogeneration['DCR'].astype('int64')
 
-	print dfcogeneration
-
 
 	"""Get Hydro Data"""
-	x=StringIO(depth3[2])
+	x=depth3[2].prettify()
 	dfs = pd.read_html(x, header=1)
 	df2=dfs[0]
 	df2['Generation_Type'] = 'HYDRO'
 
 	"""Get Wind Data"""
 
-	x=StringIO(depth3[3])
+	x=depth3[3].prettify()
 	dfs = pd.read_html(x, header=1)
 	df3=dfs[0]
 	df3['Generation_Type'] = 'WIND'
 
 
 	"""Get BIOMASS AND OTHER DATA"""
-	x=StringIO(depth3[4])
+	x=depth3[4].prettify()
 	dfs = pd.read_html(x, header=1)
 	df4=dfs[0]
 	df4['Generation_Type'] = 'BIOMASS AND OTHER'
@@ -281,10 +276,8 @@ def test2():
 		if len(t.find_parents("table")) == 2:
 			depth2.append(t)
 
-
 	"""Generation detail"""
-
-	x=StringIO(depth2[3])
+	x=depth2[3].prettify()
 	dfgeneration = pd.read_html(x, header=1)
 	dfgeneration1=dfgeneration[0]
 
@@ -312,17 +305,14 @@ def test3():
 			depth2.append(t)
 
 
-
-
-
 	"""Interchange"""
-	x=StringIO(depth2[4])
+	x=depth2[4].prettify()
 	dfinterchange = pd.read_html(x, header=1)
 	dfinterchange1=dfinterchange[0]
 	dfinterchange1.columns=['PATH','ACTUAL_FLOW']
 
 	json_interchange=dfinterchange1.to_json(orient='index')
-
+	print(json_interchange)
 
 
 	return json_interchange
@@ -426,9 +416,11 @@ def test6():
 	r.status
 	response = r.data
 	cr = csv.reader(response.decode('utf-8').splitlines())
-	for row in itertools.islice(cr,3,16):
+	for row in itertools.islice(cr,3,15):
 		short_term_date.append(row[0])
-		short_term_most_likely.append(float(row[2]))
+		tempValue = float(row[2].replace(",",""))
+		print(tempValue)
+		short_term_most_likely.append(tempValue)
 
 	short_term_wind=[]
 	x = len(short_term_date)
@@ -487,6 +479,7 @@ def test8():
 	data=[]
 
 	to_remove = soup.find_all("tr",{"class":"evenrow"})
+
 	for element in to_remove:
 		children = element.findChildren("td")
 		for child in children:
@@ -496,22 +489,22 @@ def test8():
 				try:
 					data.append(child.find('b').get_text().strip())
 				except:
-					continue
-
+					try:
+						data.append(child.find('span').get_text().strip())
+					except:
+						continue
 			else:
+				
 				try:
 					data.append(child.get_text().strip())
 				except:
-					continue
-
-
+					continue	
 
 	even_dict=[]
 
 	a=0
 
 	x=len(data)
-
 
 	while a < x:
 		temp={}
@@ -528,21 +521,20 @@ def test8():
 		"Offers_BC_MATL_Export":int(data[a+10]),
 		"Offers_System_Import":int(data[a+11]),
 		"Offers_System_Export":int(data[a+12]),
-		"ATC_BC_IMPORT":int(data[a+55]),
-		"ATC_BC_EXPORT":int(data[a+56]),
-		"ATC_MATL_IMPORT":int(data[a+57]),
-		"ATC_MATL_EXPORT":int(data[a+58]),
-		"ATC_SK_IMPORT":int(data[a+59]),
-		"ATC_SK_EXPORT":int(data[a+60]),
-		"ATC_BC_MATL_IMPORT":int(data[a+61]),
-		"ATC_BC_MATL_EXPORT":int(data[a+62]),
-		"ATC_SYSTEM_IMPORT":int(data[a+63]),
-		"ATC_SYSTEM_EXPORT":int(data[a+64])
+		"ATC_BC_IMPORT":int(data[a+56]),
+		"ATC_BC_EXPORT":int(data[a+57]),
+		"ATC_MATL_IMPORT":int(data[a+58]),
+		"ATC_MATL_EXPORT":int(data[a+59]),
+		"ATC_SK_IMPORT":int(data[a+60]),
+		"ATC_SK_EXPORT":int(data[a+61]),
+		"ATC_BC_MATL_IMPORT":int(data[a+62]),
+		"ATC_BC_MATL_EXPORT":int(data[a+63]),
+		"ATC_SYSTEM_IMPORT":int(data[a+64]),
+		"ATC_SYSTEM_EXPORT":int(data[a+65])
 		}
 
-
 		even_dict.append(temp)
-		a=a+65
+		a=a+66
 
 	"""Get Odd rows"""
 
@@ -558,7 +550,10 @@ def test8():
 				try:
 					data.append(child.find('b').get_text().strip())
 				except:
-					continue
+					try:
+						data.append(child.find('span').get_text().strip())
+					except:
+						continue
 
 			else:
 				try:
@@ -585,20 +580,20 @@ def test8():
 		"Offers_BC_MATL_Export":int(data[a+10]),
 		"Offers_System_Import":int(data[a+11]),
 		"Offers_System_Export":int(data[a+12]),
-		"ATC_BC_IMPORT":int(data[a+55]),
-		"ATC_BC_EXPORT":int(data[a+56]),
-		"ATC_MATL_IMPORT":int(data[a+57]),
-		"ATC_MATL_EXPORT":int(data[a+58]),
-		"ATC_SK_IMPORT":int(data[a+59]),
-		"ATC_SK_EXPORT":int(data[a+60]),
-		"ATC_BC_MATL_IMPORT":int(data[a+61]),
-		"ATC_BC_MATL_EXPORT":int(data[a+62]),
-		"ATC_SYSTEM_IMPORT":int(data[a+63]),
-		"ATC_SYSTEM_EXPORT":int(data[a+64])
+		"ATC_BC_IMPORT":int(data[a+56]),
+		"ATC_BC_EXPORT":int(data[a+57]),
+		"ATC_MATL_IMPORT":int(data[a+58]),
+		"ATC_MATL_EXPORT":int(data[a+59]),
+		"ATC_SK_IMPORT":int(data[a+60]),
+		"ATC_SK_EXPORT":int(data[a+61]),
+		"ATC_BC_MATL_IMPORT":int(data[a+62]),
+		"ATC_BC_MATL_EXPORT":int(data[a+63]),
+		"ATC_SYSTEM_IMPORT":int(data[a+64]),
+		"ATC_SYSTEM_EXPORT":int(data[a+65])
 		}
 
 		even_dict.append(temp)
-		a=a+65
+		a=a+66
 
 
 	output=json.dumps(even_dict)
