@@ -330,21 +330,22 @@ def test4():
 
 	tables = soup.findAll("table")
 	depth2 = []
-	depth3 = []
 
 	for t in tables:
 		if len(t.find_parents("table")) == 2:
 			depth2.append(t)
 
 
-
 	"""summary detail"""
-	x=StringIO(depth2[2])
+	x=depth2[2].prettify()
+	print(x)
 	dfsummary = pd.read_html(x, header=0)
+	print (dfsummary)
 	dfsummary1=dfsummary[0]
-	dfsummary1.columns = ['Summary', 'Values']
+	print (dfsummary1)
+	dfsummary1.columns = ['Summary', 'Values', 'Delete']
 
-
+	print (dfsummary1)
 
 	json_summary=dfsummary1.to_json(orient='index')
 
