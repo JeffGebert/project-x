@@ -1,0 +1,24 @@
+body {
+  display: flex;
+  height: 100vh;
+  margin: 0;
+}
+
+.App {
+  display:flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.under-construction {
+  align-self: center;
+  width:100%;
+  font-family: 'Shalimar', cursive;
+  font-size:100px;
+  color:#A8C3E0;
+  text-align: center;
+  margin-top:50%;
+  margin-bottom:50%;
+}
+
+
